@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A FileSystem that does not use any JNI and hence, does not require a shared library be present at
@@ -40,6 +42,10 @@ import java.util.Collection;
  */
 @ThreadSafe
 public class JavaIoFileSystem extends AbstractFileSystemWithCustomStat {
+  
+  private static final Logger logger = Logger.getLogger(JavaIoFileSystem.class.getName());
+  private static final boolean LOG_FINER = logger.isLoggable(Level.FINER);
+  
   private static final LinkOption[] NO_LINK_OPTION = new LinkOption[0];
   // This isn't generally safe; we rely on the file system APIs not modifying the array.
   private static final LinkOption[] NOFOLLOW_LINKS_OPTION =
