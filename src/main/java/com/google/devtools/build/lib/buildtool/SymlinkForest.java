@@ -85,9 +85,9 @@ class SymlinkForest {
   @VisibleForTesting
   @ThreadSafety.ThreadSafe
   static void deleteTreesBelowNotPrefixed(Path dir, String[] prefixes) throws IOException {
-    if (LOG_FINER) {
-      logger.finer("NOTE! - deleteTreesBelowNotPrefixed starting, dir is " + dir);
-    }
+    
+      logger.info("!!!!!!!!! NOTE !!!!!!!!! - deleteTreesBelowNotPrefixed starting, dir is " + dir);
+    
     dirloop:
     for (Path p : dir.getDirectoryEntries()) {
       String name = p.getBaseName();
@@ -96,20 +96,20 @@ class SymlinkForest {
           continue dirloop;
         }
       }
-      if (LOG_FINER) {
-        logger.finer("NOTE! - deleteTreesBelowNotPrefixed calling FileSystemUtils.deleteTree for path " + p);
-      }
+
+        logger.info("!!!!!!!!! NOTE !!!!!!!!! - deleteTreesBelowNotPrefixed calling FileSystemUtils.deleteTree for path " + p);
+
       FileSystemUtils.deleteTree(p);
     }
-    if (LOG_FINER) {
-      logger.finer("NOTE! - deleteTreesBelowNotPrefixed ended");
-    }
+
+      logger.info("!!!!!!!!! NOTE !!!!!!!!! - deleteTreesBelowNotPrefixed ended");
+
   }
 
   void plantSymlinkForest() throws IOException {
-    if (LOG_FINER) {
-      logger.finer("NOTE! - plantSymlinkForest started");
-    }
+
+      logger.info("!!!!!!!!! NOTE !!!!!!!!! - plantSymlinkForest started");
+
     deleteTreesBelowNotPrefixed(execroot, prefixes);
     // TODO(kchodorow): this can be removed once the execution root is rearranged.
     // Current state: symlink tree was created under execroot/$(basename ws) and then
@@ -119,14 +119,14 @@ class SymlinkForest {
     // their execution root would contain a subtree for execroot/wsname that would never be
     // cleaned up by this version of Bazel.
     Path realWorkspaceDir = execroot.getParentDirectory().getRelative(workspaceName);
-    if (LOG_FINER) {
-      logger.finer("NOTE! - plantSymlinkForest, realWorkspaceDir = " + realWorkspaceDir);
-    }
+
+      logger.info("!!!!!!!!! NOTE !!!!!!!!! - plantSymlinkForest, realWorkspaceDir = " + realWorkspaceDir);
+
     if (!workspaceName.equals(execroot.getBaseName()) && realWorkspaceDir.exists()
         && !realWorkspaceDir.isSymbolicLink()) {
-      if (LOG_FINER) {
-        logger.finer("NOTE! - plantSymlinkForest, calling FileSystemUtils.deleteTree for realWorkspaceDir = " + realWorkspaceDir);
-      }
+
+        logger.info("!!!!!!!!! NOTE !!!!!!!!! - plantSymlinkForest, calling FileSystemUtils.deleteTree for realWorkspaceDir = " + realWorkspaceDir);
+
       FileSystemUtils.deleteTree(realWorkspaceDir);
     }
 
@@ -166,9 +166,9 @@ class SymlinkForest {
             execroot.getRelative(dir.getRepository().getPathUnderExecRoot()));
       }
       if (entry.getValue().size() > 1) {
-        if (LOG_FINER) {
-          logger.finer("mkdir " + execroot.getRelative(dir.getPathUnderExecRoot()));
-        }
+        
+          logger.info("!!!!!!!!! NOTE !!!!!!!!! - mkdir " + execroot.getRelative(dir.getPathUnderExecRoot()));
+        
         FileSystemUtils.createDirectoryAndParents(
             execroot.getRelative(dir.getPathUnderExecRoot()));
       }
@@ -186,13 +186,13 @@ class SymlinkForest {
         }
         // This is the top-most dir that can be linked to a single root. Make it so.
         Root root = roots.iterator().next(); // lone root in set
-        if (LOG_FINER) {
-          logger.finer(
-              "ln -s "
+
+          logger.info(
+              "!!!!!!!!! NOTE !!!!!!!!! - ln -s "
                   + root.getRelative(dir.getSourceRoot())
                   + " "
                   + execroot.getRelative(dir.getPathUnderExecRoot()));
-        }
+        
         execroot.getRelative(dir.getPathUnderExecRoot())
             .createSymbolicLink(root.getRelative(dir.getSourceRoot()));
       }
@@ -208,10 +208,10 @@ class SymlinkForest {
           try {
             Path absdir = root.getRelative(dir.getSourceRoot());
             if (absdir.isDirectory()) {
-              if (LOG_FINER) {
-                logger.finer(
-                    "ln -s " + absdir + "/* " + execroot.getRelative(dir.getSourceRoot()) + "/");
-              }
+
+                logger.info(
+                    "!!!!!!!!! NOTE !!!!!!!!! - ln -s " + absdir + "/* " + execroot.getRelative(dir.getSourceRoot()) + "/");
+              
               for (Path target : absdir.getDirectoryEntries()) {
                 PathFragment p = root.relativize(target);
                 if (!dirRootsMap.containsKey(createInRepo(pkgId, p))) {
@@ -220,7 +220,7 @@ class SymlinkForest {
                 }
               }
             } else {
-              logger.fine("Symlink planting skipping dir '" + absdir + "'");
+              logger.info("!!!!!!!!! NOTE !!!!!!!!! - Symlink planting skipping dir '" + absdir + "'");
             }
           } catch (IOException e) {
             e.printStackTrace();
