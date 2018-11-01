@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Helper functions that implement often-used complex operations on file
@@ -38,6 +40,9 @@ import java.util.List;
 @ConditionallyThreadSafe // ThreadSafe except for deleteTree.
 public class FileSystemUtils {
 
+  private static final Logger logger = Logger.getLogger(FileSystemUtils.class.getName());
+  private static final boolean LOG_FINER = logger.isLoggable(Level.FINER);
+  
   private FileSystemUtils() {}
 
   /****************************************************************************
@@ -525,6 +530,9 @@ public class FileSystemUtils {
    */
   @ThreadSafe
   public static void deleteTree(Path p) throws IOException {
+    if (LOG_FINER) {
+        logger.finer("NOTE! - deleteTree called for path " + p);
+      }
     deleteTreesBelow(p);
     p.delete();
   }
@@ -538,6 +546,9 @@ public class FileSystemUtils {
   @ThreadSafe
   public static void deleteTreesBelow(Path dir) throws IOException {
     if (dir.isDirectory(Symlinks.NOFOLLOW)) {  // real directories (not symlinks)
+      if (LOG_FINER) {
+        logger.finer("NOTE! - deleteTreesBelow, continuning for the non symlink path " + dir);
+      }
       dir.setReadable(true);
       dir.setWritable(true);
       dir.setExecutable(true);
