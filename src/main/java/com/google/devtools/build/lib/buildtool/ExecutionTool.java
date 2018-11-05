@@ -420,9 +420,12 @@ public class ExecutionTool {
       throws ExecutorInitException, InterruptedException {
     Optional<ImmutableMap<PackageIdentifier, Root>> packageRootMap =
         packageRoots.getPackageRootsMap();
+    logger.info("!!!!!!!!! NOTE !!!!!!!!! - packageRootMap is " + packageRootMap);
     if (!packageRootMap.isPresent()) {
+      logger.info("!!!!!!!!! NOTE !!!!!!!!! - packageRootMap is NOT present, not going to planSymlinkForest");
       return;
     }
+    logger.info("!!!!!!!!! NOTE !!!!!!!!! - packageRootMap is present, YES, going to planSymlinkForest");
     // Prepare for build.
     Profiler.instance().markPhase(ProfilePhase.PREPARE);
 
